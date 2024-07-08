@@ -44,7 +44,11 @@ import (
 
 func main() {
     pattern := "ABlix.com"
-    alphabets := []string{"aeiouy", "bcdfghjklmnpqrstvwxz"}
+    alphabets := []string{
+        "aeiouy",               // alphabet A
+        "bcdfghjklmnpqrstvwxz", // alphabet B
+        // ...
+    }
 
     combinations := combigo.GenerateCombinations(pattern, alphabets)
     
