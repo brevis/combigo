@@ -106,7 +106,7 @@ Generates the next combination based on the current combination, pattern, and al
 - **pattern**: A string where capital letters indicate positions for characters from alphabets.
 - **alphabets**: An array of strings, where each string is an alphabet to be used for corresponding capital letters in the pattern.
 
-#### `func GetNextCharachter(character string, alphabet string) (string, error)`
+#### `func GetNextCharacter(character string, alphabet string) (string, error)`
 
 Returns the next character in the given alphabet.
 

@@ -70,12 +70,12 @@ func GetNextCombination(combination string, pattern string, alphabets []string) 
 	var nextCombination string
 	gettingNext := true
 	for i := 0; i < len(pattern); i++ {
-		patternCharacter := pattern[i]             // curret pattern charachter
-		currentCharacter := string(combination[i]) // current combination charachter
+		patternCharacter := pattern[i]
+		currentCharacter := string(combination[i])
 		if gettingNext {
 			index := strings.Index(Patterns, string(patternCharacter))
 			if index != -1 && index < len(alphabets) {
-				nextCharacter, err := GetNextCharachter(currentCharacter, alphabets[index])
+				nextCharacter, err := GetNextCharacter(currentCharacter, alphabets[index])
 				if err != nil {
 					currentCharacter = string(alphabets[index][0])
 				} else {
@@ -92,10 +92,10 @@ func GetNextCombination(combination string, pattern string, alphabets []string) 
 	return reverseString(nextCombination), nil
 }
 
-func GetNextCharachter(character string, alphabet string) (string, error) {
+func GetNextCharacter(character string, alphabet string) (string, error) {
 	position := strings.Index(alphabet, character)
 	if position == -1 || position > len(alphabet)-2 {
-		return "", errors.New("unable to get next charachter")
+		return "", errors.New("unable to get next character")
 	}
 	return string(alphabet[position+1]), nil
 }

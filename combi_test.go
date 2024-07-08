@@ -5,235 +5,183 @@ import (
 	"testing"
 )
 
+// Helper function to test combinations
+func testCombination(t *testing.T, pattern string, alphabets []string, actual, expected, testType string) {
+	if actual != expected {
+		t.Errorf("Error %s combination for pattern \"%s\" and alphabets \"%v\": expected \"%s\", got \"%s\"", testType, pattern, alphabets, expected, actual)
+	}
+}
+
+// Helper function to run tests for first combinations
+func runFirstCombinationTests(t *testing.T, cases []struct {
+	pattern   string
+	alphabets []string
+	expected  string
+}) {
+	for _, c := range cases {
+		actual := GetFirstPatternCombination(c.pattern, c.alphabets)
+		testCombination(t, c.pattern, c.alphabets, actual, c.expected, "get first")
+	}
+}
+
 func TestGetFirstCombinationMinimalCase(t *testing.T) {
-	pattern := "A"
-	alphabets := []string{"a", "b"}
-	actual := GetFirstPatternCombination(pattern, alphabets)
-	expected := "a"
-	if actual != expected {
-		t.Errorf("Error get first combination for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
+	cases := []struct {
+		pattern   string
+		alphabets []string
+		expected  string
+	}{
+		{"A", []string{"a", "b"}, "a"},
+		{"B", []string{"a", "b"}, "b"},
+		{"AB", []string{"a", "bc"}, "ab"},
+		{"BA", []string{"a", "bc"}, "ba"},
+		{"AB", []string{"ae", "bc"}, "ab"},
+		{"ABABAB", []string{"aeiouy", "bcdfghjklmnpqrstvwxz"}, "ababab"},
+		{"ABABAB.com", []string{"aeiouy", "bcdfghjklmnpqrstvwxz"}, "ababab.com"},
 	}
 
-	pattern = "B"
-	alphabets = []string{"a", "b"}
-	actual = GetFirstPatternCombination(pattern, alphabets)
-	expected = "b"
-	if actual != expected {
-		t.Errorf("Error get first combination for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
-	}
+	runFirstCombinationTests(t, cases)
+}
 
-	pattern = "AB"
-	alphabets = []string{"a", "bc"}
-	actual = GetFirstPatternCombination(pattern, alphabets)
-	expected = "ab"
-	if actual != expected {
-		t.Errorf("Error get first combination for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
-	}
-
-	pattern = "BA"
-	alphabets = []string{"a", "bc"}
-	actual = GetFirstPatternCombination(pattern, alphabets)
-	expected = "ba"
-	if actual != expected {
-		t.Errorf("Error get first combination for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
-	}
-
-	pattern = "AB"
-	alphabets = []string{"ae", "bc"}
-	actual = GetFirstPatternCombination(pattern, alphabets)
-	expected = "ab"
-	if actual != expected {
-		t.Errorf("Error get first combination for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
-	}
-
-	pattern = "ABABAB"
-	alphabets = []string{"aeiouy", "bcdfghjklmnpqrstvwxz"}
-	actual = GetFirstPatternCombination(pattern, alphabets)
-	expected = "ababab"
-	if actual != expected {
-		t.Errorf("Error get first combination for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
-	}
-
-	pattern = "ABABAB.com"
-	alphabets = []string{"aeiouy", "bcdfghjklmnpqrstvwxz"}
-	actual = GetFirstPatternCombination(pattern, alphabets)
-	expected = "ababab.com"
-	if actual != expected {
-		t.Errorf("Error get first combination for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
+// Helper function to run tests for last combinations
+func runLastCombinationTests(t *testing.T, cases []struct {
+	pattern   string
+	alphabets []string
+	expected  string
+}) {
+	for _, c := range cases {
+		actual := GetLastPatternCombination(c.pattern, c.alphabets)
+		testCombination(t, c.pattern, c.alphabets, actual, c.expected, "get last")
 	}
 }
 
 func TestGetLastCombinationMinimalCase(t *testing.T) {
-	pattern := "A"
-	alphabets := []string{"a", "b"}
-	actual := GetLastPatternCombination(pattern, alphabets)
-	expected := "a"
-	if actual != expected {
-		t.Errorf("Error get last combination for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
+	cases := []struct {
+		pattern   string
+		alphabets []string
+		expected  string
+	}{
+		{"A", []string{"a", "b"}, "a"},
+		{"B", []string{"a", "b"}, "b"},
+		{"AB", []string{"a", "bc"}, "ac"},
+		{"BA", []string{"a", "bc"}, "ca"},
+		{"AB", []string{"ae", "bc"}, "ec"},
+		{"ABABAB", []string{"aeiouy", "bcdfghjklmnpqrstvwxz"}, "yzyzyz"},
+		{"ABABAB.com", []string{"aeiouy", "bcdfghjklmnpqrstvwxz"}, "yzyzyz.com"},
 	}
 
-	pattern = "B"
-	alphabets = []string{"a", "b"}
-	actual = GetLastPatternCombination(pattern, alphabets)
-	expected = "b"
-	if actual != expected {
-		t.Errorf("Error get last combination for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
+	runLastCombinationTests(t, cases)
+}
+
+func TestGetNextCharacter(t *testing.T) {
+	cases := []struct {
+		alphabet  string
+		character string
+		expected  string
+		expectErr bool
+	}{
+		{"aeiouy", "a", "e", false},
+		{"aeiouy", "u", "y", false},
+		{"aeiouy", "y", "", true},
+		{"aeiouy", "b", "", true},
 	}
 
-	pattern = "AB"
-	alphabets = []string{"a", "bc"}
-	actual = GetLastPatternCombination(pattern, alphabets)
-	expected = "ac"
-	if actual != expected {
-		t.Errorf("Error get last combination for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
-	}
-
-	pattern = "BA"
-	alphabets = []string{"a", "bc"}
-	actual = GetLastPatternCombination(pattern, alphabets)
-	expected = "ca"
-	if actual != expected {
-		t.Errorf("Error get last combination for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
-	}
-
-	pattern = "AB"
-	alphabets = []string{"ae", "bc"}
-	actual = GetLastPatternCombination(pattern, alphabets)
-	expected = "ec"
-	if actual != expected {
-		t.Errorf("Error get last combination for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
-	}
-
-	pattern = "ABABAB"
-	alphabets = []string{"aeiouy", "bcdfghjklmnpqrstvwxz"}
-	actual = GetLastPatternCombination(pattern, alphabets)
-	expected = "yzyzyz"
-	if actual != expected {
-		t.Errorf("Error get last combination for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
-	}
-
-	pattern = "ABABAB.com"
-	alphabets = []string{"aeiouy", "bcdfghjklmnpqrstvwxz"}
-	actual = GetLastPatternCombination(pattern, alphabets)
-	expected = "yzyzyz.com"
-	if actual != expected {
-		t.Errorf("Error get last combination for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
+	for _, c := range cases {
+		actual, err := GetNextCharacter(c.character, c.alphabet)
+		if (err != nil) != c.expectErr {
+			t.Errorf("Error get next character for character \"%s\" and alphabet \"%v\": expected error %v, got error %v", c.character, c.alphabet, c.expectErr, err != nil)
+		}
+		if actual != c.expected && !c.expectErr {
+			t.Errorf("Error get next character for character \"%s\" and alphabet \"%v\": expected \"%s\", got \"%s\"", c.character, c.alphabet, c.expected, actual)
+		}
 	}
 }
 
-func TestGetNextCharachter(t *testing.T) {
-	alphabet := "aeiouy"
-	charachter := "a"
-	expected := "e"
-	actual, _ := GetNextCharachter(charachter, alphabet)
-	if actual != expected {
-		t.Errorf("Error get next charachter for charachter \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", charachter, alphabet, expected, actual)
-	}
-
-	charachter = "u"
-	expected = "y"
-	actual, _ = GetNextCharachter(charachter, alphabet)
-	if actual != expected {
-		t.Errorf("Error get next charachter for charachter \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", charachter, alphabet, expected, actual)
-	}
-
-	charachter = "y"
-	_, err := GetNextCharachter(charachter, alphabet)
-	if err == nil {
-		t.Errorf("Error get next charachter for charachter \"%s\" and alpabets \"%v\": expected error, got no error", charachter, alphabet)
-	}
-
-	charachter = "b"
-	_, err = GetNextCharachter(charachter, alphabet)
-	if err == nil {
-		t.Errorf("Error get next charachter for charachter \"%s\" and alpabets \"%v\": expected error, got no error", charachter, alphabet)
+// Helper function to run tests for next combinations
+func runNextCombinationTests(t *testing.T, cases []struct {
+	combination string
+	pattern     string
+	alphabets   []string
+	expected    string
+	expectErr   bool
+}) {
+	for _, c := range cases {
+		actual, err := GetNextCombination(c.combination, c.pattern, c.alphabets)
+		if (err != nil) != c.expectErr {
+			t.Errorf("Error get next combination for combination \"%s\", pattern \"%s\" and alphabets \"%v\": expected error %v, got error %v", c.combination, c.pattern, c.alphabets, c.expectErr, err != nil)
+		}
+		if actual != c.expected && !c.expectErr {
+			t.Errorf("Error get next combination for combination \"%s\", pattern \"%s\" and alphabets \"%v\": expected \"%s\", got \"%s\"", c.combination, c.pattern, c.alphabets, c.expected, actual)
+		}
 	}
 }
 
 func TestGetNextCombination(t *testing.T) {
-	alphabets := []string{"aeiouy", "bcdfghjklmnpqrstvwx"}
-	combination := ""
-	pattern := "A"
-	expected := "a"
-	actual, _ := GetNextCombination(combination, pattern, alphabets)
-	if actual != expected {
-		t.Errorf("Error get next combination for combination \"%s\", pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", combination, pattern, alphabets, expected, actual)
+	cases := []struct {
+		combination string
+		pattern     string
+		alphabets   []string
+		expected    string
+		expectErr   bool
+	}{
+		{"", "A", []string{"aeiouy", "bcdfghjklmnpqrstvwx"}, "a", false},
+		{"a", "A", []string{"aeiouy", "bcdfghjklmnpqrstvwx"}, "e", false},
+		{"aaa", "AAA", []string{"aeiouy", "bcdfghjklmnpqrstvwx"}, "aae", false},
+		{"ab", "AB", []string{"aeiouy", "bcdfghjklmnpqrstvwx"}, "ac", false},
+		{"az", "AB", []string{"aeiouy", "bcdfghjklmnpqrstvwx"}, "eb", false},
+		{"yz", "AB", []string{"aeiouy", "bcdfghjklmnpqrstvwx"}, "", true},
 	}
 
-	combination = "a"
-	pattern = "A"
-	expected = "e"
-	actual, _ = GetNextCombination(combination, pattern, alphabets)
-	if actual != expected {
-		t.Errorf("Error get next combination for combination \"%s\", pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", combination, pattern, alphabets, expected, actual)
-	}
-
-	combination = "aaa"
-	pattern = "AAA"
-	expected = "aae"
-	actual, _ = GetNextCombination(combination, pattern, alphabets)
-	if actual != expected {
-		t.Errorf("Error get next combination for combination \"%s\", pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", combination, pattern, alphabets, expected, actual)
-	}
-
-	combination = "ab"
-	pattern = "AB"
-	expected = "ac"
-	actual, _ = GetNextCombination(combination, pattern, alphabets)
-	if actual != expected {
-		t.Errorf("Error get next combination for combination \"%s\", pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", combination, pattern, alphabets, expected, actual)
-	}
-
-	combination = "az"
-	pattern = "AB"
-	expected = "eb"
-	actual, _ = GetNextCombination(combination, pattern, alphabets)
-	if actual != expected {
-		t.Errorf("Error get next combination for combination \"%s\", pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", combination, pattern, alphabets, expected, actual)
-	}
-
-	combination = "yz"
-	pattern = "AB"
-	_, err := GetNextCombination(combination, pattern, alphabets)
-	if err == nil {
-		t.Errorf("Error get next combination for combination \"%s\", pattern \"%s\" and alpabets \"%v\": expected error, got no error", combination, pattern, alphabets)
-	}
+	runNextCombinationTests(t, cases)
 }
 
 func TestGenerateMinimalCase(t *testing.T) {
-	alphabets := []string{"a", "b"}
-	pattern := "AB"
-	expected := []string{"ab"}
-	actual := GenerateCombinations(pattern, alphabets)
-	if !slices.Equal(actual, expected) {
-		t.Errorf("Error generate combinations for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
+	cases := []struct {
+		alphabets []string
+		pattern   string
+		expected  []string
+	}{
+		{[]string{"a", "b"}, "AB", []string{"ab"}},
+	}
+
+	for _, c := range cases {
+		actual := GenerateCombinations(c.pattern, c.alphabets)
+		if !slices.Equal(actual, c.expected) {
+			t.Errorf("Error generate combinations for pattern \"%s\" and alphabets \"%v\": expected \"%v\", got \"%v\"", c.pattern, c.alphabets, c.expected, actual)
+		}
 	}
 }
 
 func TestGenerateTwoCharsAlphabets(t *testing.T) {
-	alphabets := []string{"ab"}
-	pattern := "AA"
-	expected := []string{"aa", "ab", "ba", "bb"}
-	actual := GenerateCombinations(pattern, alphabets)
-	if !slices.Equal(actual, expected) {
-		t.Errorf("Error generate two chars aplhabet combinations for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
+	cases := []struct {
+		alphabets []string
+		pattern   string
+		expected  []string
+	}{
+		{[]string{"ab"}, "AA", []string{"aa", "ab", "ba", "bb"}},
+		{[]string{"ab", "cd"}, "AB", []string{"ac", "ad", "bc", "bd"}},
 	}
 
-	alphabets = []string{"ab", "cd"}
-	pattern = "AB"
-	expected = []string{"ac", "ad", "bc", "bd"}
-	actual = GenerateCombinations(pattern, alphabets)
-	if !slices.Equal(actual, expected) {
-		t.Errorf("Error generate two chars aplhabet combinations for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
+	for _, c := range cases {
+		actual := GenerateCombinations(c.pattern, c.alphabets)
+		if !slices.Equal(actual, c.expected) {
+			t.Errorf("Error generate two chars alphabet combinations for pattern \"%s\" and alphabets \"%v\": expected \"%v\", got \"%v\"", c.pattern, c.alphabets, c.expected, actual)
+		}
 	}
 }
 
 func TestGenerateThreeAlphabets(t *testing.T) {
-	alphabets := []string{"abc", "def", "ghi"}
-	pattern := "ABC"
-	expected := []string{"adg", "adh", "adi", "aeg", "aeh", "aei", "afg", "afh", "afi", "bdg", "bdh", "bdi", "beg", "beh", "bei", "bfg", "bfh", "bfi", "cdg", "cdh", "cdi", "ceg", "ceh", "cei", "cfg", "cfh", "cfi"}
-	actual := GenerateCombinations(pattern, alphabets)
-	if !slices.Equal(actual, expected) {
-		t.Errorf("Error generate three chars aplhabet combinations for pattern \"%s\" and alpabets \"%v\": expected \"%s\", got \"%s\"", pattern, alphabets, expected, actual)
+	cases := []struct {
+		alphabets []string
+		pattern   string
+		expected  []string
+	}{
+		{[]string{"abc", "def", "ghi"}, "ABC", []string{"adg", "adh", "adi", "aeg", "aeh", "aei", "afg", "afh", "afi", "bdg", "bdh", "bdi", "beg", "beh", "bei", "bfg", "bfh", "bfi", "cdg", "cdh", "cdi", "ceg", "ceh", "cei", "cfg", "cfh", "cfi"}},
+	}
+
+	for _, c := range cases {
+		actual := GenerateCombinations(c.pattern, c.alphabets)
+		if !slices.Equal(actual, c.expected) {
+			t.Errorf("Error generate three chars alphabet combinations for pattern \"%s\" and alphabets \"%v\": expected \"%v\", got \"%v\"", c.pattern, c.alphabets, c.expected, actual)
+		}
 	}
 }
